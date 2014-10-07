@@ -1,0 +1,62 @@
+/** Exercise 5 WS 1
+ *
+ * Calculates the clockwise angle between the hour and the minute hand of an
+ * analogue clock based on the assumption that 1 hour = 30 degree, 1 minute = 6
+ * degree.
+ *
+ * The angle is equivalent for both 12 and 24 hour time format, therefore the
+ * input hour should be normalized via
+ *
+ *   hnorm = hours % 12.
+ *
+ * Furthermore, the hour hand is assumened to move linear with the forward
+ * moving minute hand in the following manner
+ *
+ *   hnorm -> hnorm + minutes/60.
+ *
+ * The corresponding angle for the minute hand is simply done by
+ *
+ *   degree(minutes) = minutes * 6 degree
+ *
+ * To get the angle always counterclockwise you have to consider that the hour
+ * hand is in front on the one hand, and that the minute hand could be leading
+ * on the other hand.
+ * If the hour hand takes the lead, you can simply return
+ *
+ *    degree(time) = [(hnorm + minutes/60) * 30 degree] - minutes * 6 degree
+ *
+ * On the other hand, when the minute hand leads, we have to add 360 degree.
+ * Combining both with the modulus operator this yields
+ *
+ *  degree(time) = [360 degree - (6 degree * minutes - 30 degree * (hnorm
+ *                                                      + minutes/60))] % 360.
+ *
+ * @author  Lennart Wissel
+ * @version 06.10.2014
+ */
+
+public class Ex5 {
+  // map the given time to an angle representative
+  public static int time2Degree(int hours, int minutes) {
+    double hnorm; 
+    hnorm = hours % 12 + (minutes/60.);
+    
+    return (360 - (6*minutes - (int)(30*hnorm))) % 360;
+  }
+
+  // Make sure we can easily give informative output
+  public static String timeConversion(int h, int m) {
+    return "We can map the given time " + h + ":" + m + " to an angle of " + time2Degree(h,m) + " Degree.";
+  }
+
+  public static void main(String[] args) {
+    System.out.println("Exercise 5 -- Clock/Angle conversion");
+    System.out.println(timeConversion(9,0));  // 270
+    System.out.println(timeConversion(3,0));  // 90
+    System.out.println(timeConversion(18,0)); // 180
+    System.out.println(timeConversion(1,0));  // 30
+    System.out.println(timeConversion(2,30)); // 255
+    System.out.println(timeConversion(4,41)); // 254
+  }
+}
+
